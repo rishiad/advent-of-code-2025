@@ -54,6 +54,24 @@ impl Dial {
 
         self.pos == 0
     }
+
+    fn rotate_count_clicks(&mut self, rotation: Rotation) -> i32 {
+        let mut hits_zero = 0;
+        for _ in 0..rotation.distance {
+            match rotation.direction {
+                Direction::Left => {
+                    self.pos = (self.pos - 1).rem_euclid(100);
+                }
+                Direction::Right => {
+                    self.pos = (self.pos + 1).rem_euclid(100);
+                }
+            }
+            if self.pos == 0 {
+                hits_zero += 1;
+            }
+        }
+        hits_zero
+    }
 }
 
 pub fn part_1(input: &str) -> i32 {
@@ -65,6 +83,18 @@ pub fn part_1(input: &str) -> i32 {
         if dial.rotate(rotation) {
             hits_zero += 1;
         }
+    }
+
+    hits_zero
+}
+
+pub fn part_2(input: &str) -> i32 {
+    let rotations = parse(input);
+    let mut dial = Dial::new(50);
+    let mut hits_zero = 0;
+
+    for rotation in rotations {
+        hits_zero += dial.rotate_count_clicks(rotation);
     }
 
     hits_zero
